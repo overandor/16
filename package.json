@@ -1,0 +1,20 @@
+{
+  "name": "jito-edge-searcher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "jito_edge_searcher.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bs58": "^5.0.0",
+    "@solana/web3.js": "^1.73.2",
+    "@solsdk/jito-ts": "4.2.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
