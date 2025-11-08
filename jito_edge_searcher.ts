@@ -67,13 +67,17 @@ function envWallet(): Keypair {
 // Minimal Pyth REST read via Helius-style gateway or Pyth price-service.
 // We use price-service HTTP for simplicity.
 async function getPythSOLUSD(): Promise<{ price: number; conf: number; ageSec: number }> {
-  const url = `https://hermes.pyth.network/v2/updates/price/latest?ids[]=${CFG.PYTH_PRICE_ID_SOLUSD}&encoding=json`;
-  const j = await fetchJSON<any>(url);
-  // Hermes returns VAAs; parse the last attestation. For brevity, use the summary endpoint:
-  // fallback: https://xc-mainnet.pyth.network/api/latest_price_feeds?ids[]=...
-  const alt = `https://xc-mainnet.pyth.network/api/latest_price_feeds?ids[]=${CFG.PYTH_PRICE_ID_SOLUSD}`;
-  try {
-    const p = await fetchJSON<any[]>(alt);
+  const url = `https://hermes.pyth.network/v2/updates/price/latest?ids[]=${CFG.PYTH_PRICE_ID_SOLUSD}&encoding=json`;
+  try {
+    await fetchJSON<any>(url);
+  } catch (err) {
+    log({ level: "warn", msg: "pyth_hermes_failed", err: (err as Error).message ?? String(err) });
+  }
+  // Hermes returns VAAs; parse the last attestation. For brevity, use the summary endpoint:
+  // fallback: https://xc-mainnet.pyth.network/api/latest_price_feeds?ids[]=...
+  const alt = `https://xc-mainnet.pyth.network/api/latest_price_feeds?ids[]=${CFG.PYTH_PRICE_ID_SOLUSD}`;
+  try {
+    const p = await fetchJSON<any[]>(alt);
     const x = p[0];
     const price = Number(x.price.price) * 10 ** Number(x.price.expo); // already scaled
     const conf  = Number(x.price.conf)  * 10 ** Number(x.price.expo);
